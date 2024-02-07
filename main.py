@@ -9,14 +9,8 @@ route = Route()
 
 print (route.route_tree)
 
-print (route.get_route_path('auth.login'))
-print (route.get_route_path('auth.logout'))
-
-print (route.get_route_path('auth.register'))
-print (route.get_route_path('course.chapter.question'))
-print (route.get_route_path('course.chapter.introduce'))
 print (route.list_routes())
-
+exit()
 # 定义视图函数
 @app.route(route.get_route_path('auth.login'))
 def login():

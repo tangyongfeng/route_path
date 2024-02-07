@@ -1,7 +1,62 @@
-
-#每个根节点只能定义一次
-#每个节点都需要有path 值
-
+level1:
+  path: "level1"
+  children:
+    level2:
+      path: "level2"
+      children:
+        level3_dynamic:
+          path: "<level3_param>"
+          children:
+            level4:
+              path: "level4"
+              children:
+                level5_dynamic:
+                  path: "<level5_param>"
+                  children:
+                    level6:
+                      path: "level6"
+                      children:
+                        level7_dynamic:
+                          path: "<level7_param>"
+                          children:
+                            level8:
+                              path: "level8"
+                              children:
+                                level9_dynamic:
+                                  path: "<level9_param>"
+                                  children:
+                                    level10:
+                                      path: "level10"
+simple_path:
+  path: "simple"
+deep_nested:
+  path: "deep"
+  children:
+    nested1:
+      path: "nested1"
+      children:
+        nested2:
+          path: "nested2"
+          children:
+            nested3:
+              path: "nested3"
+              children:
+                nested4_dynamic:
+                  path: "<nested4_param>"
+                  children:
+                    nested5:
+                      path: "nested5"
+special_chars:
+  path: "special"
+  children:
+    char_test:
+      path: "chars@&$"
+    emoji_test:
+      path: "😀😃😄😁"
+    space_test:
+      path: "with space"
+    dash_test:
+      path: "with-dash"
 auth:
   path: auth
   children:
