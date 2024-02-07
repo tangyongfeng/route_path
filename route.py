@@ -16,9 +16,9 @@ def check_yaml(yaml_file):
                 # 检查 'path' 字段的存在性
                 if 'path' not in val:
                     raise ValueError(f"Missing 'path' for key '{key}' in path '{path}'.")
-                # 检查 'path' 字段的类型
-                if not isinstance(val['path'], str):
-                    raise ValueError(f"Path for key '{key}' in path '{path}' is not a string.")
+                # # 检查 'path' 字段的类型
+                # if not isinstance(val['path'], str):
+                #     raise ValueError(f"Path for key '{key}' in path '{path}' is not a string.")
 
                 new_path = f"{path}/{val['path']}".strip('/')
                 new_parent_keys = parent_keys.copy()

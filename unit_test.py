@@ -1,4 +1,8 @@
-from route import Route
+from route import Route,check_yaml
+
+print (check_yaml('test_routes.yaml'))
+
+
 route = Route('test_routes.yaml')
 
 # # 二级路由请求
