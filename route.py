@@ -37,6 +37,26 @@ def check_yaml(yaml_file):
     except Exception as e:
         print(f"Error in YAML file '{yaml_file}': {e}")
 
+def recurse(data, keys, accumulated_path=""):
+    if not keys:
+        return accumulated_path
+
+    current_key = keys[0]
+    if current_key in data:
+        node = data[current_key]
+        node_path = node.get('path', '')
+        # 正确地更新完整路径
+        full_path = f"{accumulated_path}/{node_path}".strip('/')
+
+        if 'children' in node and len(keys) > 1:
+            return recurse(node['children'], keys[1:], full_path)
+        elif len(keys) == 1:
+            return full_path
+        else:
+            return ''  # 表示后续没有更多的路径可以匹配
+    else:
+        return ''  # 当前键不在数据中
+
 
 class Route:
     _instance = None
@@ -91,31 +111,13 @@ class Route:
         keys = key.split('.')
         data = instance.route_tree
 
-        def recurse(data, keys):
-            if not keys:
-                return ''
-            current_key = keys[0]
-            if current_key in data:
-                # 如果是最后一级键，直接返回路径
-                if len(keys) == 1:
-                    result=data[current_key].get('path', '')
-                    return result
-                # 对于非最后一级键，递归查找子路径
-                else:
-                    next_level = data[current_key].get('children', {})
-                    rest_path = recurse(next_level, keys[1:])
-                    if rest_path:
-                        result=data[current_key].get('path', '') + '/' + rest_path
-                        return result
-                    else:
-                        result=data[current_key].get('path', '')
-                        return result
-            else:
-                return ''
-
-        # 调用递归函数并返回结果
-        path = recurse(data, keys)
-        return '/' + path if path else path
+        # 使用独立的 recurse 函数
+        path = recurse(data, keys).lstrip('/')
+        if not path:
+            raise ValueError(f"路由键 '{key}'在配置文件里没有设定")
+        
+        
+        return '/' + path
 
 
     @classmethod
@@ -139,7 +141,7 @@ class Route:
                     # 如果没有子节点，则当前节点是一个终点，直接添加到路由列表中
                     routes.append(current_path)
             
-            return routes
+                return routes
         
         # 从根节点开始递归遍历路由树
         all_routes = recurse(route_tree)

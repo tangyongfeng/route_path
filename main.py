@@ -8,13 +8,13 @@ app = Flask(__name__)
 route = Route()
 
 print (route.route_tree)
+
 print (route.get_route_path('auth.login'))
 print (route.get_route_path('auth.logout'))
 
 print (route.get_route_path('auth.register'))
-print (route.get_route_path('course.chapter.question_topic_number'))
+print (route.get_route_path('course.chapter.question'))
 print (route.get_route_path('course.chapter.introduce'))
-print (route.get_route_path('aaa.aaa'))
 print (route.list_routes())
 
 # 定义视图函数
@@ -38,7 +38,7 @@ def introduce(course_name_, chapter_name, introduce):
 
 
 # 创建课程相关的三级路由的视图函数
-@app.route(route.get_route_path('course.chapter.question_topic_number'))
+@app.route(route.get_route_path('course.chapter.question'))
 def course_chapter_question(course_name, chapter_name, question_topic_number):
     return f"Course: {course_name}, Chapter: {chapter_name}, Question: {question_topic_number}"
 
