@@ -83,3 +83,5 @@ course:
           path: introduce.html
         question:
           path: <question_topic_number>
+root:
+  path:

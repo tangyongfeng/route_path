@@ -35,36 +35,39 @@ def check_yaml(yaml_file):
         print(f"YAML file '{yaml_file}' is valid.")
     except Exception as e:
         print(f"Error in YAML file '{yaml_file}': {e}")
-
-# 递归函数：用于构建路径或收集所有路径
+        
+        
 def recurse(data, keys=None, accumulated_path="", collect_all=False):
     if keys is None:
         keys = []
     if not keys and not collect_all:
-        return accumulated_path
+        return accumulated_path if accumulated_path else '/'
+    
     if not collect_all:
+        if not keys:
+            return accumulated_path  # 确保即使是空列表也返回累积路径或根路径
         current_key = keys[0]
         if current_key in data:
             node = data[current_key]
             node_path = node.get('path', '')
-            full_path = f"{accumulated_path}/{node_path}".strip('/')
+            full_path = f"{accumulated_path}/{node_path}".strip('/') if node_path else accumulated_path
             if 'children' in node and len(keys) > 1:
                 return recurse(node['children'], keys[1:], full_path, collect_all)
-            elif len(keys) == 1:
-                return full_path
             else:
-                return ''
+                return full_path
         else:
-            return ''
+            return ''  # 当前键不在数据中
     else:
         routes = []
         for key, val in data.items():
-            current_path = f"{accumulated_path}/{val['path']}".strip('/')
+            current_path = f"{accumulated_path}/{val['path']}".strip('/') if val['path'] else accumulated_path
             if 'children' in val:
                 routes += recurse(val['children'], accumulated_path=current_path, collect_all=True)
             else:
-                routes.append(current_path)
+                routes.append(current_path if current_path else '/')
         return routes
+
+
 
 # Route 类定义
 class Route:
@@ -102,16 +105,21 @@ class Route:
         return route_tree
 
     # 获取指定路由键的路径
+
     @classmethod
     def get_route_path(cls, key):
         instance = cls._instance
         if instance is None:
             raise Exception("Route instance is not created yet.")
+
         keys = key.split('.')
-        path = recurse(instance.route_tree, keys).lstrip('/')
-        if not path:
-            raise ValueError(f"路由键 '{key}'在配置文件里没有设定")
-        return '/' + path
+        data = instance.route_tree
+
+        # 确保 recurse 总是返回一个字符串
+        path = recurse(data, keys) or '/'
+        # 这里不需要使用 lstrip，因为 recurse 已经确保了正确的格式
+        return path
+
 
     # 列出所有路由
     @classmethod
