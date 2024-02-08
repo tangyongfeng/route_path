@@ -32,9 +32,9 @@ def check_yaml(yaml_file):
 
         # 从根节点开始检查路由树
         check_route_tree(routes)
-        print(f"YAML file '{yaml_file}' is valid.")
+        return True,(f"YAML file '{yaml_file}' is valid.")
     except Exception as e:
-        print(f"Error in YAML file '{yaml_file}': {e}")
+        return False,(f"Error in YAML file '{yaml_file}': {e}")
         
         
 def recurse(data, keys=None, accumulated_path="", collect_all=False):
@@ -116,7 +116,7 @@ class Route:
         data = instance.route_tree
 
         # 确保 recurse 总是返回一个字符串
-        path = recurse(data, keys) or '/'
+        path = '/'+recurse(data, keys)  
         # 这里不需要使用 lstrip，因为 recurse 已经确保了正确的格式
         return path
 
@@ -130,3 +130,31 @@ class Route:
         all_routes = recurse(instance.route_tree, collect_all=True)
         all_routes = ['/' + route.lstrip('/') for route in all_routes]
         return all_routes
+
+
+    @classmethod
+    def list_all_level_route_keys(cls):
+        instance = cls._instance
+        if instance is None:
+            raise Exception("Route instance is not created yet.")
+        
+        all_level_route_keys = []
+
+        def collect_all_levels(children, prefix=''):
+            for key, value in children.items():
+                # 构建当前节点的完整路径
+                current_path = f"{prefix}.{key}" if prefix else key
+                
+                # 将当前路径添加到结果列表，包括中间层级
+                all_level_route_keys.append(current_path)
+                
+                # 如果有子节点，继续递归
+                if 'children' in value:
+                    collect_all_levels(value['children'], current_path)
+
+        # 从根节点开始递归
+        collect_all_levels(instance.route_tree)
+        
+        return all_level_route_keys
+
+

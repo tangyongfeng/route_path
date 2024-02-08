@@ -50,6 +50,10 @@ route = Route('test_routes.yaml')
 all_routes =route.list_routes()
 for item in all_routes:
     print (item)
+
+all_keys=route.list_all_level_route_keys()    
+for key in all_keys:
+    print (key)
+    print (route.get_route_path(key))
     
-    
-print (route.get_route_path('root'))
+

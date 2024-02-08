@@ -85,3 +85,8 @@ course:
           path: <question_topic_number>
 root:
   path:
+admin:
+  path: admin
+  children:
+    seach:
+      path: Search
